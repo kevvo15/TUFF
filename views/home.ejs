@@ -1,31 +1,5 @@
 <%- include('partials/head') %>
-
-<!-- Navigation -->
-
-<nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
-    <div class="container-fluid">
-        <a class=navbar-brand" href="/"><img src="/media/images/logo.png"></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-    <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="/">Home</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="#">About</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Services</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="/connect">Connect</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<%- include('partials/navbar') %>
 
 <!--- Image Slider -->
 
@@ -37,7 +11,7 @@
     </ul>
     <div class="carousel-inner">
         <div class="carousel-item active">
-            <img src="/media/images/background.png" class="img-fluid">
+            <img src="/media/images/rihanna.jpg" class="img-fluid">
             <div class="carousel-caption">
                 <h1 class="display-2">TUFF</h1>
                 <h3>ARE YOU TUFF ENUF?</h3>
