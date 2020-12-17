@@ -23,6 +23,10 @@ app.get('/collections', function (req, res) {
     res.render("collections");
 });
 
+app.get('/services', function (req, res) {
+    res.render("services")
+})
+
 app.listen(3000, function () {
     console.log("Server started on port 3000...")
 })
