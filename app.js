@@ -17,7 +17,23 @@ app.get('/', function (req, res) {
 
 app.get('/connect', function (req, res) {
     res.render("connect");
-})
+});
+
+app.get('/collections', function (req, res) {
+    res.render("collections");
+});
+
+app.get('/services', function (req, res) {
+    res.render("services")
+});
+
+app.get('/signup', function (req, res) {
+    res.render("signup")
+});
+
+app.get('/signin', function (req, res) {
+    res.render("signin")
+});
 
 app.listen(3000, function () {
     console.log("Server started on port 3000...")
