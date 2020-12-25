@@ -141,6 +141,17 @@ hr.light-100 {
     margin-bottom: 1rem;
 }
 
+.container {
+    margin-top: 20px;
+    max-width: 70%;
+}
+
+.submit {
+    margin-left: 43%;
+    margin-right: 50%;
+}
+
+
 /*---Media Queries --*/
 @media (max-width: 992px) {
     .social a {

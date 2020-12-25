@@ -12,7 +12,19 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.get('/', function (req, res) {
-    res.render("home");
+
+    var time = new Date();
+    var greeting = "";
+
+    if (time.getHours() >= 0 && time.getHours() < 12)
+        greeting = "GOOD MORNING.";
+    else if (time.getHours() >= 12 && time.getHours() < 5)
+        greeting = "GOOD AFTERNOON.";
+    else
+        greeting = "GOOD EVENING.";
+
+    res.render("home", {GREETING: greeting});
+
 });
 
 app.get('/connect', function (req, res) {
