@@ -48,6 +48,42 @@ passport.serializeUser(Member.serializeUser());
 passport.deserializeUser(Member.deserializeUser());
 
 app.get('/', function (req, res) {
+    if (req.isAuthenticated()) {
+
+        var time = new Date();
+        var greeting = "";
+
+        if (time.getHours() >= 0 && time.getHours() < 12)
+            greeting = "GOOD MORNING.";
+        else if (time.getHours() >= 12 && time.getHours() < 5)
+            greeting = "GOOD AFTERNOON.";
+        else
+            greeting = "GOOD EVENING.";
+
+        res.render("home", {GREETING: greeting})
+
+    } else {
+        res.render("welcome")
+    }
+});
+
+app.get('/connect', function (req, res) {
+    res.render("connect");
+});
+
+app.get('/collections', function (req, res) {
+    res.render('collections')
+});
+
+app.get("/services", function (req, res) {
+    if (req.isAuthenticated()) {
+        res.render("services");
+    } else {
+        res.redirect("/signin");
+    }
+});
+
+app.get('/home', function (req, res) {
 
     var time = new Date();
     var greeting = "";
@@ -59,25 +95,9 @@ app.get('/', function (req, res) {
     else
         greeting = "GOOD EVENING.";
 
-    res.render("home", {GREETING: greeting});
+    res.render("home", {GREETING: greeting})
 
-});
-
-app.get('/connect', function (req, res) {
-    res.render("connect");
-});
-
-app.get('/collections', function (req, res) {
-    res.render("collections");
-});
-
-app.get("/services", function (req, res) {
-    if (req.isAuthenticated()) {
-        res.render("services");
-    } else {
-        res.redirect("/signin");
-    }
-});
+})
 
 app.get('/signup', function (req, res) {
     res.render("signup")
@@ -85,6 +105,11 @@ app.get('/signup', function (req, res) {
 
 app.get('/signin', function (req, res) {
     res.render("signin")
+});
+
+app.get("/logout", function (req, res) {
+    req.logout();
+    res.redirect("/");
 });
 
 //Method to accept POST request from signup.ejs
@@ -104,7 +129,7 @@ app.post("/signup", function (req, res) {
 });
 
 //Method to accept POST request from signin.ejs
-app.post('/signin', passport.authenticate('local', { successRedirect: '/',
+app.post('/signin', passport.authenticate('local', { successRedirect: '/home',
     failureRedirect: '/signin' }));
 
 app.listen(3000, function () {
