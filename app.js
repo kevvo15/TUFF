@@ -1,7 +1,12 @@
 //jshint esversion:6
+require('dotenv').config()
 const express = require('express');
 const bodyParser = require('body-parser');
 const ejs = require('ejs');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const passport = require('passport');
+const passportLocalMongoose = require('passport-local-mongoose');
 
 const app = express();
 
@@ -10,6 +15,37 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
+app.use(session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+//remote connection to mongodb atlas database
+mongoose.connect(process.env.CONNECT,{useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set("useCreateIndex", true); //removes warning in terminal
+
+//Database object variables
+const memberSchema = new mongoose.Schema ({
+    username: String,
+    password: String
+});
+
+memberSchema.plugin(passportLocalMongoose);
+
+//Database object
+const Member = new mongoose.model("Member", memberSchema);
+
+// use static authenticate method of model in LocalStrategy
+passport.use(Member.createStrategy());
+
+// use static serialize and deserialize of model for passport session support
+passport.serializeUser(Member.serializeUser());
+passport.deserializeUser(Member.deserializeUser());
 
 app.get('/', function (req, res) {
 
@@ -35,8 +71,12 @@ app.get('/collections', function (req, res) {
     res.render("collections");
 });
 
-app.get('/services', function (req, res) {
-    res.render("services")
+app.get("/services", function (req, res) {
+    if (req.isAuthenticated()) {
+        res.render("services");
+    } else {
+        res.redirect("/signin");
+    }
 });
 
 app.get('/signup', function (req, res) {
@@ -47,6 +87,28 @@ app.get('/signin', function (req, res) {
     res.render("signin")
 });
 
+//Method to accept POST request from signup.ejs
+app.post("/signup", function (req, res) {
+
+    Member.register({username: req.body.username}, req.body.password, function (err, Member) {
+        if (err) {
+            console.log(err);
+            res.redirect("/signup");
+        } else {
+            passport.authenticate('local')(req, res, function () {
+                res.redirect("/");
+            });
+        }
+    });
+
+});
+
+//Method to accept POST request from signin.ejs
+app.post('/signin', passport.authenticate('local', { successRedirect: '/',
+    failureRedirect: '/signin' }));
+
 app.listen(3000, function () {
     console.log("Server started on port 3000...")
-})
+});
+
+//TODO: CREATE LOGOUT ROUTE, DIFFERENTIATE '/' FROM '/HOME'
