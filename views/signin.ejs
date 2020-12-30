@@ -1,6 +1,18 @@
 <%- include('partials/head') %>
 <%- include('partials/navbar') %>
 
-<h1>Sign in form here bih</h1>
+<div class="container">
+    <form action="/signin" method="POST">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" name="username">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" name="password">
+        </div>
+        <button type="submit" class="btn btn-outline-dark submit">SIGN IN</button>
+    </form>
+</div>
 
 <%- include('partials/footer') %>
