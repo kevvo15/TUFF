@@ -49,9 +49,8 @@ passport.deserializeUser(Member.deserializeUser());
 
 app.get('/', function (req, res) {
     if (req.isAuthenticated()) {
-
-        var time = new Date();
-        var greeting = "";
+        const time = new Date();
+        let greeting = "";
 
         if (time.getHours() >= 0 && time.getHours() < 12)
             greeting = "GOOD MORNING.";
@@ -60,8 +59,7 @@ app.get('/', function (req, res) {
         else
             greeting = "GOOD EVENING.";
 
-        res.render("home", {GREETING: greeting})
-
+        res.render("home", {greeting: greeting})
     } else {
         res.render("welcome")
     }
@@ -83,21 +81,6 @@ app.get("/services", function (req, res) {
     }
 });
 
-app.get('/home', function (req, res) {
-
-    var time = new Date();
-    var greeting = "";
-
-    if (time.getHours() >= 0 && time.getHours() < 12)
-        greeting = "GOOD MORNING.";
-    else if (time.getHours() >= 12 && time.getHours() < 5)
-        greeting = "GOOD AFTERNOON.";
-    else
-        greeting = "GOOD EVENING.";
-
-    res.render("home", {GREETING: greeting})
-
-})
 
 app.get('/signup', function (req, res) {
     res.render("signup")
@@ -129,11 +112,10 @@ app.post("/signup", function (req, res) {
 });
 
 //Method to accept POST request from signin.ejs
-app.post('/signin', passport.authenticate('local', { successRedirect: '/home',
+app.post('/signin', passport.authenticate('local', { successRedirect: '/',
     failureRedirect: '/signin' }));
 
 app.listen(3000, function () {
     console.log("Server started on port 3000...")
 });
 
-//TODO: CREATE LOGOUT ROUTE, DIFFERENTIATE '/' FROM '/HOME'
