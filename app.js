@@ -104,6 +104,47 @@ app.post("/signup", function (req, res) {
             res.redirect("/signup");
         } else {
             passport.authenticate('local')(req, res, function () {
+                const { MongoClient } = require("mongodb");
+
+// Replace the uri string with your MongoDB deployment's connection string.
+                const uri = process.env.CONNECT;
+
+                const client = new MongoClient(uri, {useUnifiedTopology: true});
+
+                async function run() {
+                    try {
+                        await client.connect();
+
+                        const database = client.db("TUFF");
+                        const collection = database.collection("members");
+
+                        // create a filter for a movie to update
+                        const filter = { username: req.body.username };
+
+                        // this option instructs the method to create a document if no documents match the filter
+                        // const options = { upsert: true };
+
+                        // create a document that sets the plot of the movie
+                        const updateDoc = {
+                            $set: {
+                                name:
+                                    req.body.name,
+                                email:
+                                    req.body.email,
+                            },
+                        };
+
+                        const result = await collection.updateOne(filter, updateDoc);
+                        console.log(
+                            `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`,
+                        );
+                    } finally {
+                        await client.close();
+                    }
+                }
+                run().catch(console.dir);
+
+
                 res.redirect("/");
             });
         }
