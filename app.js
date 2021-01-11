@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
+const nodemailer = require('nodemailer');
 
 const app = express();
 
@@ -103,10 +104,34 @@ app.post("/signup", function (req, res) {
             console.log(err);
             res.redirect("/signup");
         } else {
+
+            const transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                    user: process.env.SENDEMAIL,
+                    pass: process.env.EMAILPASS
+                }
+            });
+
+            const mailOptions = {
+                from: process.env.SENDEMAIL,
+                to: process.env.RECEMAIL,
+                subject: 'NODEMAILER TEST',
+                text: req.body.name + ', thank you for signing up with TUFF.\n' +
+                    'Your username is: ' + req.body.username
+            };
+
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+
             passport.authenticate('local')(req, res, function () {
                 const { MongoClient } = require("mongodb");
 
-// Replace the uri string with your MongoDB deployment's connection string.
                 const uri = process.env.CONNECT;
 
                 const client = new MongoClient(uri, {useUnifiedTopology: true});
@@ -124,7 +149,6 @@ app.post("/signup", function (req, res) {
                         // this option instructs the method to create a document if no documents match the filter
                         // const options = { upsert: true };
 
-                        // create a document that sets the plot of the movie
                         const updateDoc = {
                             $set: {
                                 name:
@@ -144,7 +168,7 @@ app.post("/signup", function (req, res) {
                 }
                 run().catch(console.dir);
 
-
+                console.log("Sign up complete. Redirecting to home page...")
                 res.redirect("/");
             });
         }
